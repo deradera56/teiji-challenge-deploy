@@ -36,6 +36,11 @@ func _ready() -> void:
 		24, UiTheme.TEXT_DIM)
 	line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	stats_vb.add_child(line)
+	var line2 := UiTheme.make_label(
+		"💮 パーフェクト %d回｜🎓 熟練合計 Lv%d" % [Meta.perfect_days, Meta.mastery_total_level()],
+		24, UiTheme.TEXT_DIM)
+	line2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	stats_vb.add_child(line2)
 	var money := UiTheme.make_label("💰 予算 %d" % Meta.budget, 28)
 	money.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	stats_vb.add_child(money)

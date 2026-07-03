@@ -1,14 +1,22 @@
 extends Node
-## 永続データ（会社の成長・予算・アップグレード）とセーブ/ロード。
+## 永続データ（会社の成長・予算・熟練度）とセーブ/ロード。
 
 const SAVE_PATH := "user://save.json"
+
+## カテゴリ別熟練度の表示名
+const CATEGORY_NAMES := {
+	"mail": "メール", "chat": "チャット", "phone": "電話",
+	"meeting": "会議", "incident": "障害", "paper": "書類", "rush": "修羅場",
+}
 
 var budget: int = 0                     # 予算（メタ通貨）
 var teiji_count: int = 0                # 定時退社の累計回数
 var total_days: int = 0
 var streak: int = 0                     # 連続定時退社
 var best_streak: int = 0
+var perfect_days: int = 0               # パーフェクトデー回数
 var upgrade_levels: Dictionary = {}     # upgrade_id -> level
+var mastery: Dictionary = {}            # category -> 累計XP（やり込みで熟練）
 var unlocked_companies: Array = ["it"]
 var selected_company: String = "it"
 var last_result: Dictionary = {}        # 直近の1日の結果（Result画面表示用）
@@ -66,6 +74,41 @@ func unlock_company(id: String) -> bool:
 	return true
 
 
+# ------------------------------------------------------------ 熟練度
+
+## カテゴリの熟練レベル（0〜10）。必要XPはレベルごとに1.4倍ずつ増える
+func mastery_level(category: String) -> int:
+	var xp := float(mastery.get(category, 0))
+	var lv := 0
+	var need := 30.0
+	while xp >= need and lv < 10:
+		xp -= need
+		need *= 1.4
+		lv += 1
+	return lv
+
+
+## XPを加算し、レベルが上がったら新レベルを返す（上がらなければ0）
+func add_mastery(category: String, xp: int) -> int:
+	var before := mastery_level(category)
+	mastery[category] = int(mastery.get(category, 0)) + xp
+	var after := mastery_level(category)
+	return after if after > before else 0
+
+
+func mastery_total_level() -> int:
+	var total := 0
+	for cat in CATEGORY_NAMES:
+		total += mastery_level(cat)
+	return total
+
+
+func category_name(category: String) -> String:
+	return String(CATEGORY_NAMES.get(category, category))
+
+
+# ------------------------------------------------------------ ランク・結果
+
 func rank_name() -> String:
 	var current := "定時の新人"
 	for r in Config.ranks:
@@ -85,6 +128,8 @@ func apply_result(r: Dictionary) -> void:
 		best_streak = max(best_streak, streak)
 	else:
 		streak = 0
+	if bool(r.get("perfect", false)):
+		perfect_days += 1
 	save_game()
 
 
@@ -95,7 +140,9 @@ func save_game() -> void:
 		"total_days": total_days,
 		"streak": streak,
 		"best_streak": best_streak,
+		"perfect_days": perfect_days,
 		"upgrade_levels": upgrade_levels,
+		"mastery": mastery,
 		"unlocked_companies": unlocked_companies,
 		"selected_company": selected_company,
 	}
@@ -121,7 +168,9 @@ func load_game() -> void:
 	total_days = int(d.get("total_days", 0))
 	streak = int(d.get("streak", 0))
 	best_streak = int(d.get("best_streak", 0))
+	perfect_days = int(d.get("perfect_days", 0))
 	upgrade_levels = d.get("upgrade_levels", {})
+	mastery = d.get("mastery", {})
 	unlocked_companies = d.get("unlocked_companies", ["it"])
 	selected_company = String(d.get("selected_company", "it"))
 
@@ -132,7 +181,9 @@ func reset_all() -> void:
 	total_days = 0
 	streak = 0
 	best_streak = 0
+	perfect_days = 0
 	upgrade_levels = {}
+	mastery = {}
 	unlocked_companies = ["it"]
 	selected_company = "it"
 	save_game()

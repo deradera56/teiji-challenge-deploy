@@ -18,6 +18,8 @@ var budget_earned: int = 0
 var tasks_done: int = 0
 var tasks_failed: int = 0
 var tasks_refused: int = 0
+var combo: int = 0
+var combo_max: int = 0
 
 var overtime: bool = false
 var rush_fired: bool = false
@@ -34,6 +36,7 @@ var cards: Array[TaskCard] = []
 # --- UI参照 ---
 var day_label: Label
 var streak_label: Label
+var combo_label: Label
 var clock_label: Label
 var status_label: Label
 var focus_label: Label
@@ -111,7 +114,9 @@ func _update_events(dgm: float) -> void:
 func _update_work(dgm: float) -> void:
 	# 手作業（同時に1つ）
 	if active_card != null:
-		var speed := 1.0 + Meta.effect("work_speed")
+		var cat := String(active_card.tpl.get("category", ""))
+		var speed := (1.0 + Meta.effect("work_speed")) \
+				* (1.0 + 0.04 * Meta.mastery_level(cat))
 		active_card.progress_min += dgm * speed
 		if active_card.progress_min >= active_card.work_total():
 			_complete_task(active_card)
@@ -265,14 +270,29 @@ func _on_card_refuse(card: TaskCard) -> void:
 
 func _complete_task(card: TaskCard) -> void:
 	tasks_done += 1
+	combo += 1
+	combo_max = max(combo_max, combo)
 	trust += float(card.tpl.get("trust_done", 0))
 	motivation += float(card.tpl.get("motivation_done", 0))
-	budget_earned += _reward_of(card.tpl)
-	_toast("✅ %s 完了！ +💰%d" % [String(card.tpl.get("name", "")), _reward_of(card.tpl)], UiTheme.PANEL)
+	# 連続完了コンボ：2連続目から報酬+10%ずつ（最大+100%）
+	var mult := 1.0 + minf(1.0, maxf(0.0, float(combo - 1)) * 0.1)
+	var earned := int(round(_reward_of(card.tpl) * mult))
+	budget_earned += earned
+	var cat := String(card.tpl.get("category", ""))
+	var new_lv := Meta.add_mastery(cat, int(card.work_total()))
+	if combo >= 3:
+		_toast("✅ %s 完了！+💰%d ⚡コンボx%d" % [String(card.tpl.get("name", "")), earned, combo], UiTheme.PANEL)
+	else:
+		_toast("✅ %s 完了！+💰%d" % [String(card.tpl.get("name", "")), earned], UiTheme.PANEL)
+	if new_lv > 0:
+		_toast("🎓 %s熟練度 Lv%d に上昇！（処理速度UP）" % [Meta.category_name(cat), new_lv], UiTheme.AI_COL)
 	_remove_card(card)
 
 
 func _fail_task(card: TaskCard, silent: bool = false) -> void:
+	if combo >= 3 and not silent:
+		_toast("⚡ コンボ消滅…", UiTheme.CARD_URGENT)
+	combo = 0
 	tasks_failed += 1
 	trust += float(card.tpl.get("trust_fail", -5))
 	motivation += float(card.tpl.get("motivation_fail", -3))
@@ -331,13 +351,33 @@ func _fire_random_event() -> void:
 	focus += float(effects.get("focus", 0))
 	motivation += float(effects.get("motivation", 0))
 	trust += float(effects.get("trust", 0))
+	budget_earned += int(effects.get("budget", 0))
 	for id in ev.get("spawn_tasks", []):
 		var tpl := Config.get_task(String(id))
 		if not tpl.is_empty():
 			_add_task(tpl, true)
-	var good := float(effects.get("motivation", 0)) > 0 or float(effects.get("focus", 0)) > 0
-	_toast("%s %s：%s" % [String(ev.get("icon", "❗")), String(ev.get("name", "")), String(ev.get("desc", ""))],
-			UiTheme.PANEL if good else UiTheme.CARD_URGENT)
+	var text := "%s %s：%s" % [String(ev.get("icon", "❗")), String(ev.get("name", "")), String(ev.get("desc", ""))]
+	match String(ev.get("rarity", "normal")):
+		"rare":
+			_toast("💜レア！ " + text, UiTheme.AI_COL)
+			_flash(UiTheme.AI_COL)
+		"epic":
+			_toast("🌟激レア！！ " + text, UiTheme.WARN)
+			_flash(UiTheme.WARN)
+		_:
+			var good := float(effects.get("motivation", 0)) > 0 \
+					or float(effects.get("focus", 0)) > 0 or int(effects.get("budget", 0)) > 0
+			_toast(text, UiTheme.PANEL if good else UiTheme.CARD_URGENT)
+	# 誰かがタスクを片付けてくれる系レア効果
+	for i in int(effects.get("auto_complete", 0)):
+		var target: TaskCard = null
+		for card in cards:
+			if card.state == TaskCard.State.WAITING:
+				target = card
+				break
+		if target != null:
+			_toast("✨ 『%s』が勝手に片付いた！" % String(target.tpl.get("name", "")), UiTheme.AI_COL)
+			_complete_task(target)
 
 
 # ------------------------------------------------------------------ 退社判定
@@ -369,8 +409,30 @@ func _end_day(reason: String) -> void:
 		"zero_trust":
 			budget_earned /= 2
 			outcome = "📉 信用を失った…席がない気がする"
+	# 日次評価：処理数・失敗・定時退社・残リソースからS〜Dを判定
+	var perfect := reason == "teiji" and tasks_failed == 0
+	var score := tasks_done * 2 - tasks_failed * 3
+	if reason == "teiji":
+		score += 8
+	score += int((focus + motivation + trust) / 60.0)
+	var grade := "C"
+	if reason.begins_with("zero_"):
+		grade = "D"
+	elif perfect and score >= 24:
+		grade = "S"
+	elif score >= 18:
+		grade = "A"
+	elif score >= 10:
+		grade = "B"
+	var grade_bonus: Dictionary = {"S": 30, "A": 18, "B": 8, "C": 0, "D": 0}
+	bonus += int(grade_bonus[grade])
+	if perfect:
+		bonus += 15
 	var result := {
 		"reason": reason,
+		"grade": grade,
+		"perfect": perfect,
+		"combo_max": combo_max,
 		"outcome": outcome,
 		"day": Meta.total_days + 1,
 		"company": "%s %s" % [String(company.get("icon", "")), String(company.get("name", ""))],
@@ -407,6 +469,8 @@ func _build_ui() -> void:
 	top_row.add_child(day_label)
 	streak_label = UiTheme.make_label("", 24, UiTheme.WARN)
 	top_row.add_child(streak_label)
+	combo_label = UiTheme.make_label("", 24, UiTheme.ACCENT)
+	top_row.add_child(combo_label)
 
 	clock_label = UiTheme.make_label("09:00", 62)
 	clock_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -497,6 +561,7 @@ func _update_hud() -> void:
 	day_label.text = "Day %d｜%s %s" % [Meta.total_days + 1,
 			String(company.get("icon", "")), String(company.get("name", ""))]
 	streak_label.text = "🔥 連続定時 %d" % Meta.streak if Meta.streak > 0 else ""
+	combo_label.text = " ⚡x%d" % combo if combo >= 2 else ""
 
 	focus_bar.value = focus
 	motiv_bar.value = motivation

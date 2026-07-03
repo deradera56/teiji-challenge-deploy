@@ -2,84 +2,114 @@
   "event_interval_min": 55,
   "events": [
     {
-      "id": "vpn_down", "name": "VPN障害発生！", "icon": "📡",
+      "id": "vpn_down", "name": "VPN障害発生！", "icon": "📡", "rarity": "normal",
       "desc": "全社のVPNが切断。問い合わせが殺到する",
       "effects": {"focus": -6}, "spawn_tasks": ["incident_vpn"], "weight": 8
     },
     {
-      "id": "windows_update", "name": "Windows Update", "icon": "🔄",
+      "id": "windows_update", "name": "Windows Update", "icon": "🔄", "rarity": "normal",
       "desc": "『更新して再起動』を選んでしまった…",
       "effects": {"focus": -10, "motivation": -5}, "spawn_tasks": [], "weight": 7
     },
     {
-      "id": "spec_change_ev", "name": "仕様変更", "icon": "🌀",
+      "id": "spec_change_ev", "name": "仕様変更", "icon": "🌀", "rarity": "normal",
       "desc": "客先から『やっぱりこうして』の連絡",
       "effects": {"motivation": -6}, "spawn_tasks": ["spec_change"], "weight": 9
     },
     {
-      "id": "audit", "name": "監査対応", "icon": "🧐",
+      "id": "audit", "name": "監査対応", "icon": "🧐", "rarity": "normal",
       "desc": "監査部門から証跡の提出を求められた",
       "effects": {"focus": -5}, "spawn_tasks": ["expense", "doc_request"], "weight": 5
     },
     {
-      "id": "exec_walk", "name": "役員巡回", "icon": "🚶",
+      "id": "exec_walk", "name": "役員巡回", "icon": "🚶", "rarity": "normal",
       "desc": "フロアに役員が！ 全員が仕事してるフリを始める",
       "effects": {"focus": -8, "trust": 2}, "spawn_tasks": [], "weight": 6
     },
     {
-      "id": "month_end", "name": "月末処理", "icon": "📅",
+      "id": "month_end", "name": "月末処理", "icon": "📅", "rarity": "normal",
       "desc": "月末は書類が増える。そういうものだ",
       "effects": {}, "spawn_tasks": ["expense", "mail_routine"], "weight": 6
     },
     {
-      "id": "inventory", "name": "棚卸し", "icon": "📦",
+      "id": "inventory", "name": "棚卸し", "icon": "📦", "rarity": "normal",
       "desc": "備品の数を数える謎の時間が発生",
       "effects": {"focus": -6, "motivation": -4}, "spawn_tasks": [], "weight": 4
     },
     {
-      "id": "urgent_meeting_ev", "name": "緊急会議招集", "icon": "🚨",
+      "id": "urgent_meeting_ev", "name": "緊急会議招集", "icon": "🚨", "rarity": "normal",
       "desc": "カレンダーに『今から』の会議が入った",
       "effects": {"motivation": -4}, "spawn_tasks": ["meeting_urgent"], "weight": 6
     },
     {
-      "id": "printer_jam", "name": "プリンタ紙詰まり", "icon": "🖨",
+      "id": "printer_jam", "name": "プリンタ紙詰まり", "icon": "🖨", "rarity": "normal",
       "desc": "なぜか自分が直すことになっている",
       "effects": {"focus": -4, "motivation": -3}, "spawn_tasks": [], "weight": 7
     },
     {
-      "id": "boss_chat", "name": "上司の長話", "icon": "🗣",
+      "id": "boss_chat", "name": "上司の長話", "icon": "🗣", "rarity": "normal",
       "desc": "武勇伝が始まった。終わる気配がない",
       "effects": {"focus": -7, "motivation": -5, "trust": 1}, "spawn_tasks": [], "weight": 7
     },
     {
-      "id": "snack", "name": "差し入れが届いた！", "icon": "🍩",
+      "id": "snack", "name": "差し入れが届いた！", "icon": "🍩", "rarity": "normal",
       "desc": "営業さんが出張土産を配っている",
       "effects": {"motivation": 10, "focus": 3}, "spawn_tasks": [], "weight": 6
     },
     {
-      "id": "no_overtime_day", "name": "ノー残業デー放送", "icon": "📢",
+      "id": "no_overtime_day", "name": "ノー残業デー放送", "icon": "📢", "rarity": "normal",
       "desc": "『本日はノー残業デーです』のアナウンスで士気UP",
       "effects": {"motivation": 8}, "spawn_tasks": [], "weight": 5
     },
     {
-      "id": "aircon_war", "name": "エアコン温度戦争", "icon": "🌡",
+      "id": "aircon_war", "name": "エアコン温度戦争", "icon": "🌡", "rarity": "normal",
       "desc": "暑い派と寒い派の静かな戦いが勃発",
       "effects": {"focus": -5}, "spawn_tasks": [], "weight": 5
     },
     {
-      "id": "wifi_slow", "name": "社内ネット激重", "icon": "🐌",
+      "id": "wifi_slow", "name": "社内ネット激重", "icon": "🐌", "rarity": "normal",
       "desc": "ページが開かない。仕事にならない",
       "effects": {"focus": -6, "motivation": -3}, "spawn_tasks": [], "weight": 6
     },
     {
-      "id": "phone_rush", "name": "電話ラッシュ", "icon": "📞",
+      "id": "phone_rush", "name": "電話ラッシュ", "icon": "📞", "rarity": "normal",
       "desc": "なぜか電話が同時多発する時間帯",
       "effects": {}, "spawn_tasks": ["phone_call", "phone_callback"], "weight": 5
     },
     {
-      "id": "praise_mail", "name": "お客様から感謝メール", "icon": "💌",
+      "id": "praise_mail", "name": "お客様から感謝メール", "icon": "💌", "rarity": "normal",
       "desc": "『先日はありがとうございました』…救われる",
       "effects": {"motivation": 12, "trust": 3}, "spawn_tasks": [], "weight": 4
+    },
+    {
+      "id": "prez_janken", "name": "社長じゃんけん大会", "icon": "✊", "rarity": "rare",
+      "desc": "廊下で社長に勝ってしまった。臨時報酬ゲット！",
+      "effects": {"motivation": 15, "budget": 15}, "spawn_tasks": [], "weight": 1.5
+    },
+    {
+      "id": "legend_engineer", "name": "伝説のエンジニア降臨", "icon": "🦸", "rarity": "rare",
+      "desc": "『それ、私がやっておきました』…神か？",
+      "effects": {"auto_complete": 1}, "spawn_tasks": [], "weight": 1.5
+    },
+    {
+      "id": "thanks_award", "name": "感謝状が届いた", "icon": "🏆", "rarity": "rare",
+      "desc": "お客様から正式な感謝状。フロアがざわつく",
+      "effects": {"trust": 12, "motivation": 8}, "spawn_tasks": [], "weight": 1.5
+    },
+    {
+      "id": "system_down", "name": "全社システムダウン", "icon": "🌩", "rarity": "rare",
+      "desc": "モニタが一斉に暗転。腕の見せどころだ！",
+      "effects": {"focus": -5}, "spawn_tasks": ["incident_server"], "weight": 1.2
+    },
+    {
+      "id": "bonus_day", "name": "臨時ボーナス支給", "icon": "💰", "rarity": "epic",
+      "desc": "『業績好調につき』…この会社に骨を埋めよう",
+      "effects": {"budget": 40, "motivation": 12}, "spawn_tasks": [], "weight": 0.7
+    },
+    {
+      "id": "teiji_fairy", "name": "定時の妖精", "icon": "🧚", "rarity": "epic",
+      "desc": "『帰りたい気持ち、届きました』タスクが消えていく…",
+      "effects": {"auto_complete": 2, "focus": 10}, "spawn_tasks": [], "weight": 0.5
     }
   ]
 }

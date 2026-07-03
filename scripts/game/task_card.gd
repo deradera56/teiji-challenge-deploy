@@ -50,6 +50,9 @@ func _build() -> void:
 	vb.add_child(top)
 
 	top.add_child(UiTheme.make_label(String(tpl.get("icon", "📄")), 38))
+	var mastery_lv := Meta.mastery_level(String(tpl.get("category", "")))
+	if mastery_lv > 0:
+		top.add_child(UiTheme.make_label("Lv%d" % mastery_lv, 20, UiTheme.WARN))
 	var name_l := UiTheme.make_label(String(tpl.get("name", "?")), 30)
 	name_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(name_l)

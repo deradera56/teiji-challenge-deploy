@@ -7,7 +7,7 @@ func _ready() -> void:
 	var r: Dictionary = Meta.last_result
 	var vb := UiTheme.make_margin_vbox(self, 44, 18)
 
-	vb.add_child(UiTheme.vspace(50))
+	vb.add_child(UiTheme.vspace(20))
 
 	var teiji := String(r.get("reason", "")) == "teiji"
 	var outcome := UiTheme.make_label(String(r.get("outcome", "退社")), 42,
@@ -20,6 +20,20 @@ func _ready() -> void:
 	day_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vb.add_child(day_l)
 
+	# 日次評価グレード
+	var grade := String(r.get("grade", "C"))
+	var grade_colors: Dictionary = {
+		"S": UiTheme.WARN, "A": UiTheme.GOOD, "B": UiTheme.ACCENT,
+		"C": UiTheme.TEXT_DIM, "D": UiTheme.BAD,
+	}
+	var grade_l := UiTheme.make_label("評価 %s" % grade, 60, grade_colors.get(grade, UiTheme.TEXT_DIM))
+	grade_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vb.add_child(grade_l)
+	if bool(r.get("perfect", false)):
+		var p := UiTheme.make_label("💮 パーフェクトデー！（失敗ゼロで定時退社）", 25, UiTheme.WARN)
+		p.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vb.add_child(p)
+
 	vb.add_child(UiTheme.vspace(10))
 
 	# 成績パネル
@@ -31,10 +45,22 @@ func _ready() -> void:
 	_add_row(sv, "✅ 処理したタスク", "%d件" % int(r.get("tasks_done", 0)))
 	_add_row(sv, "💥 期限切れ", "%d件" % int(r.get("tasks_failed", 0)))
 	_add_row(sv, "🙅 断ったタスク", "%d件" % int(r.get("tasks_refused", 0)))
+	_add_row(sv, "⚡ 最大コンボ", "x%d" % int(r.get("combo_max", 0)))
 	if int(r.get("overtime_min", 0)) > 0:
 		_add_row(sv, "🌙 残業時間", "%d分" % int(r.get("overtime_min", 0)))
 	_add_row(sv, "🧠 集中 / 🔥 やる気 / 🤝 信用",
 			"%d / %d / %d" % [int(r.get("focus", 0)), int(r.get("motivation", 0)), int(r.get("trust", 0))])
+
+	# 熟練度（やり込みの証）
+	var levels := PackedStringArray()
+	for cat in Meta.CATEGORY_NAMES:
+		var lv := Meta.mastery_level(String(cat))
+		if lv > 0:
+			levels.append("%s Lv%d" % [Meta.category_name(String(cat)), lv])
+	if levels.size() > 0:
+		var m := UiTheme.make_label("🎓 熟練度：" + "・".join(levels), 21, UiTheme.TEXT_DIM)
+		m.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vb.add_child(m)
 
 	# 報酬パネル
 	var reward := UiTheme.make_panel(UiTheme.CARD, 16)

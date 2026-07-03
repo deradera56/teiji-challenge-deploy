@@ -47,9 +47,9 @@ with tempfile.NamedTemporaryFile("w", suffix=".txt", encoding="utf-8", delete=Fa
 
 subprocess.run(["pyftsubset", CJK_SRC, "--font-number=0",
                 f"--text-file={text_file}",
-                "--output-file=ui/fonts/noto_jp_subset.otf",
+                "--output-file=ui/fonts/noto_jp_subset.fontdata",
                 "--layout-features=*", "--no-hinting", "--desubroutinize"], check=True)
 subprocess.run(["pyftsubset", EMOJI_SRC,
                 f"--text-file={emoji_file}",
-                "--output-file=ui/fonts/noto_emoji_subset.ttf", "--no-hinting"], check=True)
+                "--output-file=ui/fonts/noto_emoji_subset.fontdata", "--no-hinting"], check=True)
 print(f"done. text={len(text)}字 emoji={len(emoji)}字")
