@@ -1,0 +1,126 @@
+{
+  "spawn_interval_min": 22,
+  "initial_tasks": ["mail_routine", "teams_question", "doc_request"],
+  "tasks": [
+    {
+      "id": "mail_routine", "name": "定例メール返信", "icon": "📧", "category": "mail",
+      "desc": "CC30人のメールに『承知しました』を返す",
+      "work_min": 12, "focus_cost": 4, "deadline_min": 100,
+      "trust_done": 2, "trust_fail": -5, "motivation_fail": -3,
+      "budget_reward": 3, "urgent": false, "refuse_trust": -3, "weight": 12
+    },
+    {
+      "id": "mail_exec", "name": "役員CCの重要メール", "icon": "📮", "category": "mail",
+      "desc": "役員がCCに…。誤字は許されない",
+      "work_min": 20, "focus_cost": 8, "deadline_min": 80,
+      "trust_done": 5, "trust_fail": -12, "motivation_fail": -6,
+      "budget_reward": 8, "urgent": true, "refuse_trust": -10, "weight": 5
+    },
+    {
+      "id": "teams_question", "name": "Teamsの質問対応", "icon": "💬", "category": "chat",
+      "desc": "『ちょっといいですか？』（よくない）",
+      "work_min": 8, "focus_cost": 3, "deadline_min": 60,
+      "trust_done": 2, "trust_fail": -4, "motivation_fail": -3,
+      "budget_reward": 2, "urgent": false, "refuse_trust": -2, "weight": 10
+    },
+    {
+      "id": "teams_stamp", "name": "Teamsスタンプ大喜利", "icon": "😂", "category": "chat",
+      "desc": "部内チャットが盛り上がっている。乗るか？",
+      "work_min": 5, "focus_cost": 1, "deadline_min": 40,
+      "trust_done": 0, "trust_fail": 0, "motivation_fail": -1, "motivation_done": 5,
+      "budget_reward": 0, "urgent": false, "refuse_trust": 0, "weight": 5
+    },
+    {
+      "id": "phone_call", "name": "電話対応", "icon": "📞", "category": "phone",
+      "desc": "内線が鳴っている。出るまで鳴り止まない",
+      "work_min": 10, "focus_cost": 5, "deadline_min": 30,
+      "trust_done": 3, "trust_fail": -7, "motivation_fail": -5,
+      "budget_reward": 4, "urgent": true, "refuse_trust": -6, "weight": 7
+    },
+    {
+      "id": "phone_callback", "name": "折り返し電話", "icon": "☎", "category": "phone",
+      "desc": "『お電話がありました』の付箋が置かれている",
+      "work_min": 8, "focus_cost": 4, "deadline_min": 70,
+      "trust_done": 2, "trust_fail": -5, "motivation_fail": -3,
+      "budget_reward": 3, "urgent": false, "refuse_trust": -4, "weight": 6
+    },
+    {
+      "id": "meeting_regular", "name": "定例会議", "icon": "🪑", "category": "meeting",
+      "desc": "議題は特にないが開催される会議",
+      "work_min": 30, "focus_cost": 6, "deadline_min": 90,
+      "trust_done": 3, "trust_fail": -8, "motivation_fail": -4,
+      "budget_reward": 5, "urgent": false, "refuse_trust": -5, "weight": 6
+    },
+    {
+      "id": "meeting_urgent", "name": "緊急会議", "icon": "🚨", "category": "meeting",
+      "desc": "件名『【至急】今後の対応について』",
+      "work_min": 25, "focus_cost": 8, "deadline_min": 40,
+      "trust_done": 5, "trust_fail": -10, "motivation_fail": -6,
+      "budget_reward": 8, "urgent": true, "refuse_trust": -8, "weight": 3
+    },
+    {
+      "id": "incident_server", "name": "障害対応", "icon": "🔥", "category": "incident",
+      "desc": "本番サーバの様子がおかしい",
+      "work_min": 28, "focus_cost": 12, "deadline_min": 45,
+      "trust_done": 8, "trust_fail": -15, "motivation_fail": -8,
+      "budget_reward": 12, "urgent": true, "refuse_trust": -12, "weight": 4
+    },
+    {
+      "id": "incident_vpn", "name": "VPN復旧対応", "icon": "📡", "category": "incident",
+      "desc": "全社からVPNが繋がらないと問い合わせ殺到",
+      "work_min": 22, "focus_cost": 10, "deadline_min": 50,
+      "trust_done": 6, "trust_fail": -12, "motivation_fail": -6,
+      "budget_reward": 10, "urgent": true, "refuse_trust": -10, "weight": 0
+    },
+    {
+      "id": "doc_request", "name": "資料作成依頼", "icon": "📊", "category": "paper",
+      "desc": "『パワポでいい感じにまとめて』",
+      "work_min": 25, "focus_cost": 8, "deadline_min": 120,
+      "trust_done": 4, "trust_fail": -8, "motivation_fail": -5,
+      "budget_reward": 7, "urgent": false, "refuse_trust": -5, "weight": 8
+    },
+    {
+      "id": "expense", "name": "経費精算", "icon": "🧾", "category": "paper",
+      "desc": "領収書の山。締切は今日",
+      "work_min": 15, "focus_cost": 5, "deadline_min": 110,
+      "trust_done": 1, "trust_fail": -4, "motivation_fail": -6,
+      "budget_reward": 3, "urgent": false, "refuse_trust": -1, "weight": 6
+    },
+    {
+      "id": "spec_confirm", "name": "仕様確認", "icon": "🔍", "category": "paper",
+      "desc": "仕様書のどこにも書いていない仕様の確認",
+      "work_min": 18, "focus_cost": 7, "deadline_min": 90,
+      "trust_done": 3, "trust_fail": -6, "motivation_fail": -4,
+      "budget_reward": 5, "urgent": false, "refuse_trust": -4, "weight": 7
+    },
+    {
+      "id": "spec_change", "name": "仕様変更対応", "icon": "🌀", "category": "paper",
+      "desc": "『やっぱり元に戻して』",
+      "work_min": 24, "focus_cost": 10, "deadline_min": 80,
+      "trust_done": 5, "trust_fail": -10, "motivation_fail": -8,
+      "budget_reward": 9, "urgent": true, "refuse_trust": -7, "weight": 0
+    },
+    {
+      "id": "rush_boss", "name": "上司『ちょっといい？』", "icon": "👔", "category": "rush",
+      "desc": "17:50に肩を叩かれた。嫌な予感しかしない",
+      "work_min": 12, "focus_cost": 6, "deadline_min": 25,
+      "trust_done": 4, "trust_fail": -8, "motivation_fail": -6,
+      "budget_reward": 6, "urgent": true, "refuse_trust": -6, "weight": 0
+    },
+    {
+      "id": "rush_request", "name": "退社直前の依頼", "icon": "📥", "category": "rush",
+      "desc": "『今日中にお願いできる？』（今17:50）",
+      "work_min": 15, "focus_cost": 7, "deadline_min": 30,
+      "trust_done": 5, "trust_fail": -9, "motivation_fail": -7,
+      "budget_reward": 8, "urgent": true, "refuse_trust": -5, "weight": 0
+    },
+    {
+      "id": "rush_incident", "name": "本番障害!?", "icon": "💥", "category": "rush",
+      "desc": "17:50のアラート通知。今日イチの緊張感",
+      "work_min": 20, "focus_cost": 10, "deadline_min": 35,
+      "trust_done": 8, "trust_fail": -14, "motivation_fail": -8,
+      "budget_reward": 12, "urgent": true, "refuse_trust": -10, "weight": 0
+    }
+  ],
+  "rush_pool": ["rush_boss", "rush_request", "rush_incident"]
+}

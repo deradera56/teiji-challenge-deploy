@@ -1,0 +1,44 @@
+{
+  "companies": [
+    {
+      "id": "it", "name": "IT企業", "icon": "💻",
+      "desc": "標準バランス。チャットと障害がほどほどに来る",
+      "unlock_cost": 0,
+      "event_interval_mult": 1.0, "spawn_interval_mult": 1.0, "reward_mult": 1.0,
+      "category_weight_mult": {"chat": 1.3, "incident": 1.2},
+      "rush_count": 3
+    },
+    {
+      "id": "sier", "name": "SIer", "icon": "🏢",
+      "desc": "会議と仕様変更の嵐。その分報酬は高い",
+      "unlock_cost": 150,
+      "event_interval_mult": 0.85, "spawn_interval_mult": 0.95, "reward_mult": 1.25,
+      "category_weight_mult": {"meeting": 2.0, "paper": 1.5},
+      "rush_count": 3
+    },
+    {
+      "id": "maker", "name": "メーカー", "icon": "🏭",
+      "desc": "電話と書類が多め。月末と棚卸しに注意",
+      "unlock_cost": 250,
+      "event_interval_mult": 0.9, "spawn_interval_mult": 1.0, "reward_mult": 1.2,
+      "category_weight_mult": {"phone": 1.8, "paper": 1.6},
+      "rush_count": 3
+    },
+    {
+      "id": "gov", "name": "官公庁", "icon": "🏛",
+      "desc": "書類、書類、また書類。イベントは少なめで堅実",
+      "unlock_cost": 350,
+      "event_interval_mult": 1.3, "spawn_interval_mult": 1.05, "reward_mult": 1.15,
+      "category_weight_mult": {"paper": 2.5, "chat": 0.5, "incident": 0.5},
+      "rush_count": 2
+    },
+    {
+      "id": "startup", "name": "スタートアップ", "icon": "🚀",
+      "desc": "全部が高速で燃えている。ハイリスク・ハイリターン",
+      "unlock_cost": 500,
+      "event_interval_mult": 0.7, "spawn_interval_mult": 0.75, "reward_mult": 1.6,
+      "category_weight_mult": {"incident": 2.0, "chat": 1.5},
+      "rush_count": 4
+    }
+  ]
+}

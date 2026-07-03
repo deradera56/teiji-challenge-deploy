@@ -1,0 +1,85 @@
+{
+  "event_interval_min": 55,
+  "events": [
+    {
+      "id": "vpn_down", "name": "VPN障害発生！", "icon": "📡",
+      "desc": "全社のVPNが切断。問い合わせが殺到する",
+      "effects": {"focus": -6}, "spawn_tasks": ["incident_vpn"], "weight": 8
+    },
+    {
+      "id": "windows_update", "name": "Windows Update", "icon": "🔄",
+      "desc": "『更新して再起動』を選んでしまった…",
+      "effects": {"focus": -10, "motivation": -5}, "spawn_tasks": [], "weight": 7
+    },
+    {
+      "id": "spec_change_ev", "name": "仕様変更", "icon": "🌀",
+      "desc": "客先から『やっぱりこうして』の連絡",
+      "effects": {"motivation": -6}, "spawn_tasks": ["spec_change"], "weight": 9
+    },
+    {
+      "id": "audit", "name": "監査対応", "icon": "🧐",
+      "desc": "監査部門から証跡の提出を求められた",
+      "effects": {"focus": -5}, "spawn_tasks": ["expense", "doc_request"], "weight": 5
+    },
+    {
+      "id": "exec_walk", "name": "役員巡回", "icon": "🚶",
+      "desc": "フロアに役員が！ 全員が仕事してるフリを始める",
+      "effects": {"focus": -8, "trust": 2}, "spawn_tasks": [], "weight": 6
+    },
+    {
+      "id": "month_end", "name": "月末処理", "icon": "📅",
+      "desc": "月末は書類が増える。そういうものだ",
+      "effects": {}, "spawn_tasks": ["expense", "mail_routine"], "weight": 6
+    },
+    {
+      "id": "inventory", "name": "棚卸し", "icon": "📦",
+      "desc": "備品の数を数える謎の時間が発生",
+      "effects": {"focus": -6, "motivation": -4}, "spawn_tasks": [], "weight": 4
+    },
+    {
+      "id": "urgent_meeting_ev", "name": "緊急会議招集", "icon": "🚨",
+      "desc": "カレンダーに『今から』の会議が入った",
+      "effects": {"motivation": -4}, "spawn_tasks": ["meeting_urgent"], "weight": 6
+    },
+    {
+      "id": "printer_jam", "name": "プリンタ紙詰まり", "icon": "🖨",
+      "desc": "なぜか自分が直すことになっている",
+      "effects": {"focus": -4, "motivation": -3}, "spawn_tasks": [], "weight": 7
+    },
+    {
+      "id": "boss_chat", "name": "上司の長話", "icon": "🗣",
+      "desc": "武勇伝が始まった。終わる気配がない",
+      "effects": {"focus": -7, "motivation": -5, "trust": 1}, "spawn_tasks": [], "weight": 7
+    },
+    {
+      "id": "snack", "name": "差し入れが届いた！", "icon": "🍩",
+      "desc": "営業さんが出張土産を配っている",
+      "effects": {"motivation": 10, "focus": 3}, "spawn_tasks": [], "weight": 6
+    },
+    {
+      "id": "no_overtime_day", "name": "ノー残業デー放送", "icon": "📢",
+      "desc": "『本日はノー残業デーです』のアナウンスで士気UP",
+      "effects": {"motivation": 8}, "spawn_tasks": [], "weight": 5
+    },
+    {
+      "id": "aircon_war", "name": "エアコン温度戦争", "icon": "🌡",
+      "desc": "暑い派と寒い派の静かな戦いが勃発",
+      "effects": {"focus": -5}, "spawn_tasks": [], "weight": 5
+    },
+    {
+      "id": "wifi_slow", "name": "社内ネット激重", "icon": "🐌",
+      "desc": "ページが開かない。仕事にならない",
+      "effects": {"focus": -6, "motivation": -3}, "spawn_tasks": [], "weight": 6
+    },
+    {
+      "id": "phone_rush", "name": "電話ラッシュ", "icon": "📞",
+      "desc": "なぜか電話が同時多発する時間帯",
+      "effects": {}, "spawn_tasks": ["phone_call", "phone_callback"], "weight": 5
+    },
+    {
+      "id": "praise_mail", "name": "お客様から感謝メール", "icon": "💌",
+      "desc": "『先日はありがとうございました』…救われる",
+      "effects": {"motivation": 12, "trust": 3}, "spawn_tasks": [], "weight": 4
+    }
+  ]
+}

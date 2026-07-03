@@ -1,0 +1,34 @@
+; Engine configuration file.
+; Godot 4.x project — 定時退社チャレンジ (α+メタ)
+
+config_version=5
+
+[application]
+
+config/name="定時退社チャレンジ"
+config/description="今日も18時に帰れるか？ 3〜5分で遊べる優先順位付けカジュアルゲーム"
+run/main_scene="res://scenes/Title.tscn"
+config/features=PackedStringArray("4.3")
+
+[autoload]
+
+Config="*res://scripts/autoload/config.gd"
+Meta="*res://scripts/autoload/meta.gd"
+UiTheme="*res://scripts/autoload/ui_theme.gd"
+
+[display]
+
+window/size/viewport_width=720
+window/size/viewport_height=1280
+window/handheld/orientation=1
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
+[rendering]
+
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"

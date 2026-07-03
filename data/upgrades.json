@@ -1,0 +1,54 @@
+{
+  "upgrades": [
+    {
+      "id": "chatgpt", "name": "ChatGPT導入", "icon": "🤖",
+      "desc": "タスク処理速度 +15%/Lv", "effect": "work_speed", "per_level": 0.15,
+      "max_level": 5, "base_cost": 60, "cost_mult": 1.6
+    },
+    {
+      "id": "copilot", "name": "Copilot契約", "icon": "✈",
+      "desc": "AI委任スロット +1/Lv（タスクを自動処理）", "effect": "ai_slots", "per_level": 1,
+      "max_level": 2, "base_cost": 120, "cost_mult": 2.0
+    },
+    {
+      "id": "rpa", "name": "RPA導入", "icon": "⚙",
+      "desc": "メール系タスクを発生時に自動処理 10%/Lv", "effect": "auto_mail_chance", "per_level": 0.10,
+      "max_level": 5, "base_cost": 80, "cost_mult": 1.7
+    },
+    {
+      "id": "ocr", "name": "OCRツール", "icon": "📷",
+      "desc": "タスクの集中力コスト -8%/Lv", "effect": "focus_cost_reduce", "per_level": 0.08,
+      "max_level": 5, "base_cost": 70, "cost_mult": 1.6
+    },
+    {
+      "id": "power_automate", "name": "Power Automate", "icon": "🔗",
+      "desc": "タスク発生間隔 +8%/Lv（仕事が減る）", "effect": "spawn_slow", "per_level": 0.08,
+      "max_level": 5, "base_cost": 90, "cost_mult": 1.7
+    },
+    {
+      "id": "coffee", "name": "高級コーヒーサーバー", "icon": "☕",
+      "desc": "休憩の集中力回復 +20%/Lv", "effect": "coffee_boost", "per_level": 0.20,
+      "max_level": 3, "base_cost": 50, "cost_mult": 1.8
+    },
+    {
+      "id": "welfare", "name": "福利厚生の充実", "icon": "🌴",
+      "desc": "開始時のやる気 +6/Lv", "effect": "start_motivation", "per_level": 6,
+      "max_level": 5, "base_cost": 55, "cost_mult": 1.6
+    },
+    {
+      "id": "ai_speed", "name": "AIモデル強化", "icon": "🧠",
+      "desc": "AI委任の処理速度 +20%/Lv", "effect": "ai_speed", "per_level": 0.20,
+      "max_level": 4, "base_cost": 100, "cost_mult": 1.7
+    }
+  ],
+  "ranks": [
+    {"teiji": 0, "name": "定時の新人"},
+    {"teiji": 3, "name": "定時見習い"},
+    {"teiji": 7, "name": "定時主任"},
+    {"teiji": 15, "name": "定時係長"},
+    {"teiji": 25, "name": "定時課長"},
+    {"teiji": 40, "name": "定時部長"},
+    {"teiji": 60, "name": "定時役員"},
+    {"teiji": 100, "name": "定時の伝説"}
+  ]
+}

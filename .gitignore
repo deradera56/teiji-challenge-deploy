@@ -1,0 +1,10 @@
+# Godot
+.godot/
+*.translation
+
+# Build output
+build/
+
+# OS
+.DS_Store
+Thumbs.db
