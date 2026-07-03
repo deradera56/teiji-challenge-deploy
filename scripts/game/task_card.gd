@@ -49,7 +49,9 @@ func _build() -> void:
 	top.add_theme_constant_override("separation", 12)
 	vb.add_child(top)
 
-	top.add_child(UiTheme.make_label(String(tpl.get("icon", "📄")), 38))
+	var icon_l := UiTheme.make_label(String(tpl.get("icon", "📄")), 38)
+	icon_l.autowrap_mode = TextServer.AUTOWRAP_OFF  # 2文字絵文字を横並びで固定
+	top.add_child(icon_l)
 	var mastery_lv := Meta.mastery_level(String(tpl.get("category", "")))
 	if mastery_lv > 0:
 		top.add_child(UiTheme.make_label("Lv%d" % mastery_lv, 20, UiTheme.WARN))
