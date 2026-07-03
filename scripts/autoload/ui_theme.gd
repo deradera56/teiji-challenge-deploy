@@ -23,6 +23,7 @@ func _ready() -> void:
 	var jp_err := jp.load_dynamic_font("res://ui/fonts/noto_jp_subset.fontdata")
 	var emoji := FontFile.new()
 	var emoji_err := emoji.load_dynamic_font("res://ui/fonts/noto_emoji_subset.fontdata")
+	var base_font: Font
 	if jp_err == OK:
 		var fallbacks: Array[Font] = []
 		if emoji_err == OK:
@@ -30,11 +31,18 @@ func _ready() -> void:
 		if not OS.has_feature("web"):
 			fallbacks.append(_system_font())
 		jp.fallbacks = fallbacks
-		ThemeDB.fallback_font = jp
+		base_font = jp
 	else:
 		# フォントが読めない場合の保険（OSフォント頼み）
 		push_warning("同梱フォントの読み込みに失敗しました")
-		ThemeDB.fallback_font = _system_font()
+		base_font = _system_font()
+	# ルートウィンドウにテーマとして適用（ThemeDBのfallbackだけでは
+	# デフォルトテーマに反映されないため、こちらが確実）
+	var theme := Theme.new()
+	theme.default_font = base_font
+	theme.default_font_size = 28
+	get_window().theme = theme
+	ThemeDB.fallback_font = base_font
 	ThemeDB.fallback_font_size = 28
 
 
