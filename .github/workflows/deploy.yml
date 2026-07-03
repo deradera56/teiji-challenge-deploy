@@ -28,6 +28,11 @@ jobs:
         with:
           enablement: true
 
+      - name: Setup export templates
+        run: |
+          mkdir -p ~/.local/share/godot/export_templates
+          mv /root/.local/share/godot/export_templates/* ~/.local/share/godot/export_templates/
+
       - name: Import assets
         run: godot --headless --import || true
 
