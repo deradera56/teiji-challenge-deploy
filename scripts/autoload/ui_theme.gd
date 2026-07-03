@@ -20,9 +20,9 @@ func _ready() -> void:
 	# Webビルドでも表示できるようフォントは res://ui/fonts/ に同梱している。
 	# 同梱フォントに無い文字はデスクトップではOSフォントにフォールバックする。
 	var jp := FontFile.new()
-	var jp_err := jp.load_dynamic_font("res://ui/fonts/noto_jp_subset.otf")
+	var jp_err := jp.load_dynamic_font("res://ui/fonts/noto_jp_subset.fontdata")
 	var emoji := FontFile.new()
-	var emoji_err := emoji.load_dynamic_font("res://ui/fonts/noto_emoji_subset.ttf")
+	var emoji_err := emoji.load_dynamic_font("res://ui/fonts/noto_emoji_subset.fontdata")
 	if jp_err == OK:
 		var fallbacks: Array[Font] = []
 		if emoji_err == OK:
