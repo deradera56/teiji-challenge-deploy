@@ -19,18 +19,21 @@ func _ready() -> void:
 	# Godot標準フォントはCJK非対応。同梱フォント（日本語＋絵文字サブセット）を使う。
 	# Webビルドでも表示できるようフォントは res://ui/fonts/ に同梱している。
 	# 同梱フォントに無い文字はデスクトップではOSフォントにフォールバックする。
-	var jp: Font = load("res://ui/fonts/noto_jp_subset.otf")
-	var emoji: Font = load("res://ui/fonts/noto_emoji_subset.ttf")
-	if jp is FontFile:
+	var jp := FontFile.new()
+	var jp_err := jp.load_dynamic_font("res://ui/fonts/noto_jp_subset.otf")
+	var emoji := FontFile.new()
+	var emoji_err := emoji.load_dynamic_font("res://ui/fonts/noto_emoji_subset.ttf")
+	if jp_err == OK:
 		var fallbacks: Array[Font] = []
-		if emoji != null:
+		if emoji_err == OK:
 			fallbacks.append(emoji)
 		if not OS.has_feature("web"):
 			fallbacks.append(_system_font())
-		(jp as FontFile).fallbacks = fallbacks
+		jp.fallbacks = fallbacks
 		ThemeDB.fallback_font = jp
 	else:
 		# フォントが読めない場合の保険（OSフォント頼み）
+		push_warning("同梱フォントの読み込みに失敗しました")
 		ThemeDB.fallback_font = _system_font()
 	ThemeDB.fallback_font_size = 28
 
