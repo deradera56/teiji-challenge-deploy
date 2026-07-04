@@ -34,6 +34,17 @@ func _ready() -> void:
 		p.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vb.add_child(p)
 
+	# レベルアップ演出（プレイヤーレベルが上がった日は一番目立たせる）
+	if bool(r.get("level_up", false)):
+		vb.add_child(UiTheme.vspace(6))
+		var lvup := UiTheme.make_panel(UiTheme.WARN, 16)
+		vb.add_child(lvup)
+		var lvup_l := UiTheme.make_label(
+			"🆙 プレイヤーレベルアップ！ Lv%d → Lv%d" % [int(r.get("level_before", 0)), int(r.get("level_after", 0))],
+			26, UiTheme.TEXT_MAIN)
+		lvup_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lvup.add_child(lvup_l)
+
 	vb.add_child(UiTheme.vspace(10))
 
 	# 成績パネル
@@ -62,42 +73,28 @@ func _ready() -> void:
 		m.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vb.add_child(m)
 
+	# 実績解除パネル（新規解除があるときだけ表示）
+	var new_achievements: Array = r.get("new_achievements", [])
+	if new_achievements.size() > 0:
+		vb.add_child(UiTheme.vspace(6))
+		var ach_panel := UiTheme.make_panel(UiTheme.AI_COL, 16)
+		vb.add_child(ach_panel)
+		var ach_vb := VBoxContainer.new()
+		ach_vb.add_theme_constant_override("separation", 4)
+		ach_panel.add_child(ach_vb)
+		var ach_title := UiTheme.make_label("🏆 実績解除！（+%dXP）" % _sum_xp(new_achievements), 24, UiTheme.TEXT_MAIN)
+		ach_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		ach_vb.add_child(ach_title)
+		for a in new_achievements:
+			var line := UiTheme.make_label(
+				"%s %s — %s" % [String(a.get("icon", "🏆")), String(a.get("name", "")), String(a.get("desc", ""))],
+				20, UiTheme.TEXT_MAIN)
+			line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			ach_vb.add_child(line)
+
 	# 報酬パネル
 	var reward := UiTheme.make_panel(UiTheme.CARD, 16)
 	vb.add_child(reward)
 	var rv := VBoxContainer.new()
 	reward.add_child(rv)
-	var money := UiTheme.make_label("💰 獲得予算 +%d（合計 %d）" % [int(r.get("budget_total", 0)), Meta.budget], 30, UiTheme.WARN)
-	money.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	rv.add_child(money)
-	var rank := UiTheme.make_label("👑 %s｜定時退社 %d回｜🔥連続 %d" % [Meta.rank_name(), Meta.teiji_count, Meta.streak],
-			24, UiTheme.TEXT_DIM)
-	rank.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	rv.add_child(rank)
-
-	vb.add_child(UiTheme.vspace(16))
-
-	var next_btn := UiTheme.make_button("💼 次の日へ", UiTheme.ACCENT, 34)
-	next_btn.custom_minimum_size = Vector2(0, 92)
-	next_btn.pressed.connect(func() -> void:
-		get_tree().change_scene_to_file("res://scenes/Game.tscn"))
-	vb.add_child(next_btn)
-
-	var shop_btn := UiTheme.make_button("🛠 会社強化（AI・設備）", UiTheme.GOOD, 28)
-	shop_btn.pressed.connect(func() -> void:
-		get_tree().change_scene_to_file("res://scenes/Shop.tscn"))
-	vb.add_child(shop_btn)
-
-	var title_btn := UiTheme.make_button("🏠 タイトルへ", Color(0.3, 0.3, 0.35), 24)
-	title_btn.pressed.connect(func() -> void:
-		get_tree().change_scene_to_file("res://scenes/Title.tscn"))
-	vb.add_child(title_btn)
-
-
-func _add_row(parent: Control, label_text: String, value_text: String) -> void:
-	var row := HBoxContainer.new()
-	parent.add_child(row)
-	var l := UiTheme.make_label(label_text, 24, UiTheme.TEXT_DIM)
-	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_child(l)
-	row.add_child(UiTheme.make_label(value_text, 24))
+	var money := UiTheme.make_label("💰 獲得予算 +%d（合計 %d）" % [int(r.

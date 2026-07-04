@@ -45,36 +45,30 @@ func _ready() -> void:
 	money.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	stats_vb.add_child(money)
 
-	vb.add_child(UiTheme.vspace(30))
+	# --- プレイヤーレベル（実績で貯まるXPで成長） ---
+	stats_vb.add_child(UiTheme.vspace(8))
+	var prog := Meta.player_level_progress()
+	var ach_count := Meta.achievement_progress_count()
+	var lv_row := HBoxContainer.new()
+	stats_vb.add_child(lv_row)
+	var lv_label := UiTheme.make_label("🧗 プレイヤーLv%d" % int(prog["level"]), 24, UiTheme.ACCENT)
+	lv_row.add_child(lv_label)
+	var ach_label := UiTheme.make_label("🏆 実績 %d/%d" % [int(ach_count["unlocked"]), int(ach_count["total"])],
+			24, UiTheme.TEXT_DIM)
+	ach_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	ach_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	lv_row.add_child(ach_label)
 
-	var start_btn := UiTheme.make_button("💼 出社する", UiTheme.ACCENT, 36)
-	start_btn.custom_minimum_size = Vector2(0, 100)
-	start_btn.pressed.connect(func() -> void:
-		get_tree().change_scene_to_file("res://scenes/CompanySelect.tscn"))
-	vb.add_child(start_btn)
+	var lv_bar := UiTheme.make_bar(UiTheme.ACCENT)
+	lv_bar.max_value = max(1.0, float(prog["need"]))
+	lv_bar.value = float(prog["cur"])
+	stats_vb.add_child(lv_bar)
 
-	var shop_btn := UiTheme.make_button("🛠 会社強化（AI・設備）", UiTheme.GOOD, 30)
-	shop_btn.pressed.connect(func() -> void:
-		get_tree().change_scene_to_file("res://scenes/Shop.tscn"))
-	vb.add_child(shop_btn)
-
-	var spacer := Control.new()
-	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vb.add_child(spacer)
-
-	var reset_btn := UiTheme.make_button("データリセット", Color(0.3, 0.3, 0.35), 20)
-	reset_btn.custom_minimum_size = Vector2(0, 52)
-	reset_btn.pressed.connect(_on_reset)
-	vb.add_child(reset_btn)
-
-
-func _on_reset() -> void:
-	var dialog := ConfirmationDialog.new()
-	dialog.dialog_text = "会社の成長・予算・記録をすべて消去します。よろしいですか？"
-	dialog.ok_button_text = "消去する"
-	dialog.cancel_button_text = "やめる"
-	add_child(dialog)
-	dialog.confirmed.connect(func() -> void:
-		Meta.reset_all()
-		get_tree().reload_current_scene())
-	dialog.popup_centered()
+	# --- 次の実績まであと一歩ヒント（ゴールが近いと分かると続けたくなる） ---
+	var hint: Dictionary = Meta.next_achievement_hint()
+	if not hint.is_empty():
+		var ratio := float(hint.get("_progress", 0.0))
+		var hint_text := "次の実績まであと少し！"
+		if ratio < 0.05:
+			hint_text = "次に目指す実績"
+		var hint_l := UiTheme.make_label

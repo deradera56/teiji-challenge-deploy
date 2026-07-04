@@ -9,6 +9,7 @@ func _initialize() -> void:
 	var ed := _load("res://data/events.json")
 	var cd := _load("res://data/companies.json")
 	var ud := _load("res://data/upgrades.json")
+	var achd := _load("res://data/achievements.json")
 
 	var ids := {}
 	for t in td.get("tasks", []):
@@ -25,17 +26,9 @@ func _initialize() -> void:
 	if ud.get("upgrades", []).is_empty():
 		errors.append("アップグレードデータが空")
 
-	if errors.is_empty():
-		print("ALL CHECKS PASSED")
-	else:
-		for e in errors:
-			printerr(e)
-	quit(0 if errors.is_empty() else 1)
-
-
-func _load(path: String) -> Dictionary:
-	var f := FileAccess.open(path, FileAccess.READ)
-	if f == null:
-		return {}
-	var parsed: Variant = JSON.parse_string(f.get_as_text())
-	return parsed if parsed is Dictionary else {}
+	# --- 実績データの整合性チェック ---
+	var known_stats := {
+		"teiji_count": true, "streak": true, "best_streak": true, "perfect_days": true,
+		"total_days": true, "mastery_total_level": true, "lifetime_tasks_done": true,
+		"lifetime_tasks_failed": true, "lifetime_tasks_refused": true,
+		

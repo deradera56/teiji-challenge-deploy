@@ -24,6 +24,8 @@ var combo_max: int = 0
 var overtime: bool = false
 var rush_fired: bool = false
 var ended: bool = false
+var rare_events_today: int = 0
+var epic_events_today: int = 0
 
 var company: Dictionary = {}
 var spawn_timer: float = 14.0
@@ -359,9 +361,11 @@ func _fire_random_event() -> void:
 	var text := "%s %s：%s" % [String(ev.get("icon", "❗")), String(ev.get("name", "")), String(ev.get("desc", ""))]
 	match String(ev.get("rarity", "normal")):
 		"rare":
+			rare_events_today += 1
 			_toast("💜レア！ " + text, UiTheme.AI_COL)
 			_flash(UiTheme.AI_COL)
 		"epic":
+			epic_events_today += 1
 			_toast("🌟激レア！！ " + text, UiTheme.WARN)
 			_flash(UiTheme.WARN)
 		_:
@@ -444,6 +448,8 @@ func _end_day(reason: String) -> void:
 		"focus": int(focus),
 		"motivation": int(motivation),
 		"trust": int(trust),
+		"rare_events": rare_events_today,
+		"epic_events": epic_events_today,
 	}
 	Meta.apply_result(result)
 	get_tree().change_scene_to_file("res://scenes/Result.tscn")
@@ -605,10 +611,4 @@ func _toast(text: String, bg: Color) -> void:
 	tw.tween_property(p, "modulate:a", 1.0, 0.15)
 	tw.tween_interval(2.2)
 	tw.tween_property(p, "modulate:a", 0.0, 0.4)
-	tw.tween_callback(p.queue_free)
-
-
-func _flash(color: Color) -> void:
-	flash_rect.color = Color(color.r, color.g, color.b, 0.3)
-	var tw := flash_rect.create_tween()
-	tw.tween_property(flash_rect, "color:a", 0.0, 1.0)
+	tw.tween_callback(p.queue_free

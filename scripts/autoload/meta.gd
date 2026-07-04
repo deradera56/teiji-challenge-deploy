@@ -21,6 +21,17 @@ var unlocked_companies: Array = ["it"]
 var selected_company: String = "it"
 var last_result: Dictionary = {}        # 直近の1日の結果（Result画面表示用）
 
+# --- 実績・プレイヤーレベル（生涯統計） ---
+var unlocked_achievements: Array = []   # 解除済み実績ID
+var player_xp: int = 0                  # 実績解除で得られるXP（プレイヤーレベルの元）
+var lifetime_tasks_done: int = 0
+var lifetime_tasks_failed: int = 0
+var lifetime_tasks_refused: int = 0
+var lifetime_budget_earned: int = 0
+var best_combo_ever: int = 0
+var rare_events_seen: int = 0
+var epic_events_seen: int = 0
+
 
 func _ready() -> void:
 	load_game()
@@ -107,83 +118,51 @@ func category_name(category: String) -> String:
 	return String(CATEGORY_NAMES.get(category, category))
 
 
-# ------------------------------------------------------------ ランク・結果
+# ------------------------------------------------------------ プレイヤーレベル・実績
+## 実績解除で得たXPからプレイヤーレベルを算出する（必要XPはレベルごとに1.25倍）
+const PLAYER_XP_BASE := 40.0
+const PLAYER_XP_MULT := 1.25
 
-func rank_name() -> String:
-	var current := "定時の新人"
-	for r in Config.ranks:
-		if teiji_count >= int(r["teiji"]):
-			current = String(r["name"])
-	return current
-
-
-## 1日の結果を反映してセーブする
-func apply_result(r: Dictionary) -> void:
-	last_result = r
-	total_days += 1
-	budget += int(r.get("budget_total", 0))
-	if String(r.get("reason", "")) == "teiji":
-		teiji_count += 1
-		streak += 1
-		best_streak = max(best_streak, streak)
-	else:
-		streak = 0
-	if bool(r.get("perfect", false)):
-		perfect_days += 1
-	save_game()
+func player_level() -> int:
+	return _player_level_progress()["level"]
 
 
-func save_game() -> void:
-	var data := {
-		"budget": budget,
-		"teiji_count": teiji_count,
-		"total_days": total_days,
-		"streak": streak,
-		"best_streak": best_streak,
-		"perfect_days": perfect_days,
-		"upgrade_levels": upgrade_levels,
-		"mastery": mastery,
-		"unlocked_companies": unlocked_companies,
-		"selected_company": selected_company,
-	}
-	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
-	if f == null:
-		push_error("セーブに失敗しました")
-		return
-	f.store_string(JSON.stringify(data, "\t"))
+## {level, cur, need} を返す（curは現レベル内蓄積XP、needは次レベルに必要なXP）
+func player_level_progress() -> Dictionary:
+	return _player_level_progress()
 
 
-func load_game() -> void:
-	if not FileAccess.file_exists(SAVE_PATH):
-		return
-	var f := FileAccess.open(SAVE_PATH, FileAccess.READ)
-	if f == null:
-		return
-	var parsed: Variant = JSON.parse_string(f.get_as_text())
-	if not (parsed is Dictionary):
-		return
-	var d: Dictionary = parsed
-	budget = int(d.get("budget", 0))
-	teiji_count = int(d.get("teiji_count", 0))
-	total_days = int(d.get("total_days", 0))
-	streak = int(d.get("streak", 0))
-	best_streak = int(d.get("best_streak", 0))
-	perfect_days = int(d.get("perfect_days", 0))
-	upgrade_levels = d.get("upgrade_levels", {})
-	mastery = d.get("mastery", {})
-	unlocked_companies = d.get("unlocked_companies", ["it"])
-	selected_company = String(d.get("selected_company", "it"))
+func _player_level_progress() -> Dictionary:
+	var xp := float(player_xp)
+	var lv := 0
+	var need := PLAYER_XP_BASE
+	while xp >= need:
+		xp -= need
+		need *= PLAYER_XP_MULT
+		lv += 1
+	return {"level": lv, "cur": xp, "need": need}
 
 
-func reset_all() -> void:
-	budget = 0
-	teiji_count = 0
-	total_days = 0
-	streak = 0
-	best_streak = 0
-	perfect_days = 0
-	upgrade_levels = {}
-	mastery = {}
-	unlocked_companies = ["it"]
-	selected_company = "it"
-	save_game()
+## 設備アップグレードが最大レベルになっている個数
+func maxed_upgrades_count() -> int:
+	var n := 0
+	for u in Config.upgrades:
+		if upgrade_level(String(u["id"])) >= int(u["max_level"]):
+			n += 1
+	return n
+
+
+## 実績条件で参照する統計値を名前から引く
+func get_stat(stat_name: String) -> float:
+	match stat_name:
+		"teiji_count": return float(teiji_count)
+		"streak": return float(streak)
+		"best_streak": return float(best_streak)
+		"perfect_days": return float(perfect_days)
+		"total_days": return float(total_days)
+		"mastery_total_level": return float(mastery_total_level())
+		"lifetime_tasks_done": return float(lifetime_tasks_done)
+		"lifetime_tasks_failed": return float(lifetime_tasks_failed)
+		"lifetime_tasks_refused": return float(lifetime_tasks_refused)
+		"lifetime_budget_earned": return float(lifetime_budget_earned)
+		"

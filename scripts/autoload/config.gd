@@ -14,6 +14,7 @@ var event_interval_min: float = 55.0
 var companies: Array = []
 var upgrades: Array = []
 var ranks: Array = []
+var achievements: Array = []
 
 
 func _ready() -> void:
@@ -41,6 +42,9 @@ func _load_all() -> void:
 	upgrades = ud.get("upgrades", [])
 	ranks = ud.get("ranks", [])
 
+	var achd := _load_json("res://data/achievements.json")
+	achievements = achd.get("achievements", [])
+
 
 func _load_json(path: String) -> Dictionary:
 	var f := FileAccess.open(path, FileAccess.READ)
@@ -58,8 +62,4 @@ func get_task(id: String) -> Dictionary:
 	return tasks.get(id, {})
 
 
-func get_company(id: String) -> Dictionary:
-	for c in companies:
-		if c["id"] == id:
-			return c
-	return companies[0] if not companies.is_empty() else {}
+func get_company(id: St
