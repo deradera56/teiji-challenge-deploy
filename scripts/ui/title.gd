@@ -71,4 +71,48 @@ func _ready() -> void:
 		var hint_text := "次の実績まであと少し！"
 		if ratio < 0.05:
 			hint_text = "次に目指す実績"
-		var hint_l := UiTheme.make_label
+		var hint_l := UiTheme.make_label(
+			"%s %s %s（%d/%d）" % [hint_text, String(hint.get("icon", "🏆")), String(hint.get("name", "")),
+					int(hint.get("_val", 0)), int(hint.get("_target", 1))],
+			19, UiTheme.WARN if ratio >= 0.7 else UiTheme.TEXT_DIM)
+		hint_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		stats_vb.add_child(hint_l)
+
+	vb.add_child(UiTheme.vspace(30))
+
+	var start_btn := UiTheme.make_button("💼 出社する", UiTheme.ACCENT, 36)
+	start_btn.custom_minimum_size = Vector2(0, 100)
+	start_btn.pressed.connect(func() -> void:
+		get_tree().change_scene_to_file("res://scenes/CompanySelect.tscn"))
+	vb.add_child(start_btn)
+
+	var shop_btn := UiTheme.make_button("🛠 会社強化（AI・設備）", UiTheme.GOOD, 30)
+	shop_btn.pressed.connect(func() -> void:
+		get_tree().change_scene_to_file("res://scenes/Shop.tscn"))
+	vb.add_child(shop_btn)
+
+	var ach_btn := UiTheme.make_button("🏆 実績一覧", UiTheme.AI_COL, 28)
+	ach_btn.pressed.connect(func() -> void:
+		get_tree().change_scene_to_file("res://scenes/Achievements.tscn"))
+	vb.add_child(ach_btn)
+
+	var spacer := Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vb.add_child(spacer)
+
+	var reset_btn := UiTheme.make_button("データリセット", Color(0.3, 0.3, 0.35), 20)
+	reset_btn.custom_minimum_size = Vector2(0, 52)
+	reset_btn.pressed.connect(_on_reset)
+	vb.add_child(reset_btn)
+
+
+func _on_reset() -> void:
+	var dialog := ConfirmationDialog.new()
+	dialog.dialog_text = "会社の成長・予算・記録をすべて消去します。よろしいですか？"
+	dialog.ok_button_text = "消去する"
+	dialog.cancel_button_text = "やめる"
+	add_child(dialog)
+	dialog.confirmed.connect(func() -> void:
+		Meta.reset_all()
+		get_tree().reload_current_scene())
+	dialog.popup_centered()

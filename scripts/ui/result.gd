@@ -97,4 +97,59 @@ func _ready() -> void:
 	vb.add_child(reward)
 	var rv := VBoxContainer.new()
 	reward.add_child(rv)
-	var money := UiTheme.make_label("💰 獲得予算 +%d（合計 %d）" % [int(r.
+	var money := UiTheme.make_label("💰 獲得予算 +%d（合計 %d）" % [int(r.get("budget_total", 0)), Meta.budget], 30, UiTheme.WARN)
+	money.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	rv.add_child(money)
+	var rank := UiTheme.make_label("👑 %s｜定時退社 %d回｜🔥連続 %d" % [Meta.rank_name(), Meta.teiji_count, Meta.streak],
+			24, UiTheme.TEXT_DIM)
+	rank.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	rv.add_child(rank)
+
+	var prog := Meta.player_level_progress()
+	var ach_count := Meta.achievement_progress_count()
+	var lv_line := UiTheme.make_label(
+		"🧗 プレイヤーLv%d（%d/%d XP）｜🏆 実績 %d/%d" % [
+			int(prog["level"]), int(prog["cur"]), int(prog["need"]),
+			int(ach_count["unlocked"]), int(ach_count["total"])],
+		21, UiTheme.TEXT_DIM)
+	lv_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	rv.add_child(lv_line)
+
+	vb.add_child(UiTheme.vspace(16))
+
+	var next_btn := UiTheme.make_button("💼 次の日へ", UiTheme.ACCENT, 34)
+	next_btn.custom_minimum_size = Vector2(0, 92)
+	next_btn.pressed.connect(func() -> void:
+		get_tree().change_scene_to_file("res://scenes/Game.tscn"))
+	vb.add_child(next_btn)
+
+	var shop_btn := UiTheme.make_button("🛠 会社強化（AI・設備）", UiTheme.GOOD, 28)
+	shop_btn.pressed.connect(func() -> void:
+		get_tree().change_scene_to_file("res://scenes/Shop.tscn"))
+	vb.add_child(shop_btn)
+
+	var ach_btn := UiTheme.make_button("🏆 実績一覧", UiTheme.AI_COL, 26)
+	ach_btn.pressed.connect(func() -> void:
+		get_tree().change_scene_to_file("res://scenes/Achievements.tscn"))
+	vb.add_child(ach_btn)
+
+	var title_btn := UiTheme.make_button("🏠 タイトルへ", Color(0.3, 0.3, 0.35), 24)
+	title_btn.pressed.connect(func() -> void:
+		get_tree().change_scene_to_file("res://scenes/Title.tscn"))
+	vb.add_child(title_btn)
+
+
+func _sum_xp(achievements: Array) -> int:
+	var total := 0
+	for a in achievements:
+		total += int(a.get("xp", 0))
+	return total
+
+
+func _add_row(parent: Control, label_text: String, value_text: String) -> void:
+	var row := HBoxContainer.new()
+	parent.add_child(row)
+	var l := UiTheme.make_label(label_text, 24, UiTheme.TEXT_DIM)
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(l)
+	row.add_child(UiTheme.make_label(value_text, 24))

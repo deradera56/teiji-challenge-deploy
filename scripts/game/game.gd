@@ -611,4 +611,10 @@ func _toast(text: String, bg: Color) -> void:
 	tw.tween_property(p, "modulate:a", 1.0, 0.15)
 	tw.tween_interval(2.2)
 	tw.tween_property(p, "modulate:a", 0.0, 0.4)
-	tw.tween_callback(p.queue_free
+	tw.tween_callback(p.queue_free)
+
+
+func _flash(color: Color) -> void:
+	flash_rect.color = Color(color.r, color.g, color.b, 0.3)
+	var tw := flash_rect.create_tween()
+	tw.tween_property(flash_rect, "color:a", 0.0, 1.0)

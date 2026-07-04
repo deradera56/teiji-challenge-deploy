@@ -165,4 +165,191 @@ func get_stat(stat_name: String) -> float:
 		"lifetime_tasks_failed": return float(lifetime_tasks_failed)
 		"lifetime_tasks_refused": return float(lifetime_tasks_refused)
 		"lifetime_budget_earned": return float(lifetime_budget_earned)
-		"
+		"best_combo_ever": return float(best_combo_ever)
+		"rare_events_seen": return float(rare_events_seen)
+		"epic_events_seen": return float(epic_events_seen)
+		"unlocked_companies_count": return float(unlocked_companies.size())
+		"maxed_upgrades_count": return float(maxed_upgrades_count())
+		"budget": return float(budget)
+	if stat_name.begins_with("mastery_"):
+		return float(mastery_level(stat_name.substr(8)))
+	return 0.0
+
+
+func _condition_met(cond: Dictionary) -> bool:
+	var val := get_stat(String(cond.get("stat", "")))
+	var target := float(cond.get("value", 0))
+	match String(cond.get("op", ">=")):
+		">=": return val >= target
+		">": return val > target
+		"==": return val == target
+		"<=": return val <= target
+		"<": return val < target
+	return false
+
+
+## 未解除の実績のうち条件を満たしたものを解除し、新規解除リストを返す
+func check_achievements() -> Array:
+	var newly: Array = []
+	for a in Config.achievements:
+		var id := String(a["id"])
+		if unlocked_achievements.has(id):
+			continue
+		if _condition_met(a.get("condition", {})):
+			unlocked_achievements.append(id)
+			player_xp += int(a.get("xp", 20))
+			newly.append(a)
+	return newly
+
+
+## 未解除の実績のうち、条件に最も近いもの（進捗のヒント表示用）
+func next_achievement_hint() -> Dictionary:
+	var best := {}
+	var best_ratio := -1.0
+	for a in Config.achievements:
+		var id := String(a["id"])
+		if unlocked_achievements.has(id):
+			continue
+		var cond: Dictionary = a.get("condition", {})
+		var target := max(0.001, float(cond.get("value", 1)))
+		var val := get_stat(String(cond.get("stat", "")))
+		var ratio: float = clamp(val / target, 0.0, 0.999)
+		if ratio > best_ratio:
+			best_ratio = ratio
+			best = a.duplicate()
+			best["_progress"] = ratio
+			best["_val"] = val
+			best["_target"] = target
+	return best
+
+
+func achievement_progress_count() -> Dictionary:
+	return {"unlocked": unlocked_achievements.size(), "total": Config.achievements.size()}
+
+
+# ------------------------------------------------------------ ランク・結果
+
+func rank_name() -> String:
+	var current := "定時の新人"
+	for r in Config.ranks:
+		if teiji_count >= int(r["teiji"]):
+			current = String(r["name"])
+	return current
+
+
+## 1日の結果を反映してセーブする
+func apply_result(r: Dictionary) -> void:
+	total_days += 1
+	budget += int(r.get("budget_total", 0))
+	if String(r.get("reason", "")) == "teiji":
+		teiji_count += 1
+		streak += 1
+		best_streak = max(best_streak, streak)
+	else:
+		streak = 0
+	if bool(r.get("perfect", false)):
+		perfect_days += 1
+
+	# 生涯統計を積み上げる（実績判定の元データ）
+	lifetime_tasks_done += int(r.get("tasks_done", 0))
+	lifetime_tasks_failed += int(r.get("tasks_failed", 0))
+	lifetime_tasks_refused += int(r.get("tasks_refused", 0))
+	lifetime_budget_earned += int(r.get("budget_total", 0))
+	best_combo_ever = max(best_combo_ever, int(r.get("combo_max", 0)))
+	rare_events_seen += int(r.get("rare_events", 0))
+	epic_events_seen += int(r.get("epic_events", 0))
+
+	# 実績判定とプレイヤーレベルアップ判定
+	var level_before := player_level()
+	var newly := check_achievements()
+	var level_after := player_level()
+	r["new_achievements"] = newly
+	r["level_before"] = level_before
+	r["level_after"] = level_after
+	r["level_up"] = level_after > level_before
+
+	last_result = r
+	save_game()
+
+
+func save_game() -> void:
+	var data := {
+		"budget": budget,
+		"teiji_count": teiji_count,
+		"total_days": total_days,
+		"streak": streak,
+		"best_streak": best_streak,
+		"perfect_days": perfect_days,
+		"upgrade_levels": upgrade_levels,
+		"mastery": mastery,
+		"unlocked_companies": unlocked_companies,
+		"selected_company": selected_company,
+		"unlocked_achievements": unlocked_achievements,
+		"player_xp": player_xp,
+		"lifetime_tasks_done": lifetime_tasks_done,
+		"lifetime_tasks_failed": lifetime_tasks_failed,
+		"lifetime_tasks_refused": lifetime_tasks_refused,
+		"lifetime_budget_earned": lifetime_budget_earned,
+		"best_combo_ever": best_combo_ever,
+		"rare_events_seen": rare_events_seen,
+		"epic_events_seen": epic_events_seen,
+	}
+	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if f == null:
+		push_error("セーブに失敗しました")
+		return
+	f.store_string(JSON.stringify(data, "\t"))
+
+
+func load_game() -> void:
+	if not FileAccess.file_exists(SAVE_PATH):
+		return
+	var f := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if f == null:
+		return
+	var parsed: Variant = JSON.parse_string(f.get_as_text())
+	if not (parsed is Dictionary):
+		return
+	var d: Dictionary = parsed
+	budget = int(d.get("budget", 0))
+	teiji_count = int(d.get("teiji_count", 0))
+	total_days = int(d.get("total_days", 0))
+	streak = int(d.get("streak", 0))
+	best_streak = int(d.get("best_streak", 0))
+	perfect_days = int(d.get("perfect_days", 0))
+	upgrade_levels = d.get("upgrade_levels", {})
+	mastery = d.get("mastery", {})
+	unlocked_companies = d.get("unlocked_companies", ["it"])
+	selected_company = String(d.get("selected_company", "it"))
+	unlocked_achievements = d.get("unlocked_achievements", [])
+	player_xp = int(d.get("player_xp", 0))
+	lifetime_tasks_done = int(d.get("lifetime_tasks_done", 0))
+	lifetime_tasks_failed = int(d.get("lifetime_tasks_failed", 0))
+	lifetime_tasks_refused = int(d.get("lifetime_tasks_refused", 0))
+	lifetime_budget_earned = int(d.get("lifetime_budget_earned", 0))
+	best_combo_ever = int(d.get("best_combo_ever", 0))
+	rare_events_seen = int(d.get("rare_events_seen", 0))
+	epic_events_seen = int(d.get("epic_events_seen", 0))
+
+
+func reset_all() -> void:
+	budget = 0
+	teiji_count = 0
+	total_days = 0
+	streak = 0
+	best_streak = 0
+	perfect_days = 0
+	upgrade_levels = {}
+	mastery = {}
+	unlocked_companies = ["it"]
+	selected_company = "it"
+	unlocked_achievements = []
+	player_xp = 0
+	lifetime_tasks_done = 0
+	lifetime_tasks_failed = 0
+	lifetime_tasks_refused = 0
+	lifetime_budget_earned = 0
+	best_combo_ever = 0
+	rare_events_seen = 0
+	epic_events_seen = 0
+	save_game()

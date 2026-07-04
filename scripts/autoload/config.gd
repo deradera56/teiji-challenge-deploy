@@ -62,4 +62,8 @@ func get_task(id: String) -> Dictionary:
 	return tasks.get(id, {})
 
 
-func get_company(id: St
+func get_company(id: String) -> Dictionary:
+	for c in companies:
+		if c["id"] == id:
+			return c
+	return companies[0] if not companies.is_empty() else {}
