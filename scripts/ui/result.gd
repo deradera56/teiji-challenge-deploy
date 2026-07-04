@@ -5,9 +5,15 @@ extends Control
 func _ready() -> void:
 	UiTheme.fill_bg(self)
 	var r: Dictionary = Meta.last_result
-	var vb := UiTheme.make_margin_vbox(self, 44, 18)
 
-	vb.add_child(UiTheme.vspace(20))
+	# 実績解除演出などで内容が長くなっても必ず下のボタンまで届くようスクロール可能にする
+	var scroll := ScrollContainer.new()
+	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	add_child(scroll)
+	var vb := UiTheme.make_margin_vbox(scroll, 44, 16)
+
+	vb.add_child(UiTheme.vspace(12))
 
 	var teiji := String(r.get("reason", "")) == "teiji"
 	var outcome := UiTheme.make_label(String(r.get("outcome", "退社")), 42,

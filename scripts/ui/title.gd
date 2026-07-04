@@ -4,23 +4,29 @@ extends Control
 
 func _ready() -> void:
 	UiTheme.fill_bg(self)
-	var vb := UiTheme.make_margin_vbox(self, 48, 20)
 
-	vb.add_child(UiTheme.vspace(80))
+	# 画面が低い端末（スマホ等）でもボタンに必ず届くよう全体をスクロール可能にする
+	var scroll := ScrollContainer.new()
+	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	add_child(scroll)
+	var vb := UiTheme.make_margin_vbox(scroll, 48, 16)
 
-	var logo := UiTheme.make_label("🏢", 110)
+	vb.add_child(UiTheme.vspace(36))
+
+	var logo := UiTheme.make_label("🏢", 100)
 	logo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vb.add_child(logo)
 
-	var title := UiTheme.make_label("定時退社チャレンジ", 56)
+	var title := UiTheme.make_label("定時退社チャレンジ", 52)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vb.add_child(title)
 
-	var sub := UiTheme.make_label("〜今日も18時に帰れるか？〜", 28, UiTheme.TEXT_DIM)
+	var sub := UiTheme.make_label("〜今日も18時に帰れるか？〜", 26, UiTheme.TEXT_DIM)
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vb.add_child(sub)
 
-	vb.add_child(UiTheme.vspace(30))
+	vb.add_child(UiTheme.vspace(18))
 
 	# 戦績パネル
 	var stats := UiTheme.make_panel(UiTheme.PANEL, 16)
@@ -78,10 +84,10 @@ func _ready() -> void:
 		hint_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		stats_vb.add_child(hint_l)
 
-	vb.add_child(UiTheme.vspace(30))
+	vb.add_child(UiTheme.vspace(18))
 
-	var start_btn := UiTheme.make_button("💼 出社する", UiTheme.ACCENT, 36)
-	start_btn.custom_minimum_size = Vector2(0, 100)
+	var start_btn := UiTheme.make_button("💼 出社する", UiTheme.ACCENT, 34)
+	start_btn.custom_minimum_size = Vector2(0, 88)
 	start_btn.pressed.connect(func() -> void:
 		get_tree().change_scene_to_file("res://scenes/CompanySelect.tscn"))
 	vb.add_child(start_btn)
@@ -96,9 +102,7 @@ func _ready() -> void:
 		get_tree().change_scene_to_file("res://scenes/Achievements.tscn"))
 	vb.add_child(ach_btn)
 
-	var spacer := Control.new()
-	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vb.add_child(spacer)
+	vb.add_child(UiTheme.vspace(24))
 
 	var reset_btn := UiTheme.make_button("データリセット", Color(0.3, 0.3, 0.35), 20)
 	reset_btn.custom_minimum_size = Vector2(0, 52)
