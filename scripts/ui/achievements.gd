@@ -102,7 +102,7 @@ func _make_row(a: Dictionary, unlocked: bool) -> PanelContainer:
 	top.add_child(name_col)
 	var name_l := UiTheme.make_label(String(a.get("name", "")), 24, UiTheme.TEXT_MAIN if unlocked else UiTheme.TEXT_DIM)
 	name_col.add_child(name_l)
-	var desc_l := UiTheme.make_label(String(a.get("desc", "")), 18, UiTheme.TEXT_DIM)
+	var desc_l := UiTheme.make_label(String(a.get("desc", "")), 18, UiTheme.TEXT_DIM, true)
 	name_col.add_child(desc_l)
 	var tier_l := UiTheme.make_label(tier.to_upper(), 16, tier_col)
 	top.add_child(tier_l)

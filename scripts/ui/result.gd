@@ -17,7 +17,7 @@ func _ready() -> void:
 
 	var teiji := String(r.get("reason", "")) == "teiji"
 	var outcome := UiTheme.make_label(String(r.get("outcome", "退社")), 42,
-			UiTheme.GOOD if teiji else UiTheme.WARN)
+			UiTheme.GOOD if teiji else UiTheme.WARN, true)
 	outcome.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vb.add_child(outcome)
 
@@ -75,7 +75,7 @@ func _ready() -> void:
 		if lv > 0:
 			levels.append("%s Lv%d" % [Meta.category_name(String(cat)), lv])
 	if levels.size() > 0:
-		var m := UiTheme.make_label("🎓 熟練度：" + "・".join(levels), 21, UiTheme.TEXT_DIM)
+		var m := UiTheme.make_label("🎓 熟練度：" + "・".join(levels), 21, UiTheme.TEXT_DIM, true)
 		m.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vb.add_child(m)
 
@@ -94,7 +94,7 @@ func _ready() -> void:
 		for a in new_achievements:
 			var line := UiTheme.make_label(
 				"%s %s — %s" % [String(a.get("icon", "🏆")), String(a.get("name", "")), String(a.get("desc", ""))],
-				20, UiTheme.TEXT_MAIN)
+				20, UiTheme.TEXT_MAIN, true)
 			line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			ach_vb.add_child(line)
 

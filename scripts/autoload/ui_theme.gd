@@ -72,12 +72,15 @@ func fill_bg(parent: Control, color: Color = BG) -> void:
 	parent.move_child(rect, 0)
 
 
-func make_label(text: String, size: int = 28, color: Color = TEXT_MAIN) -> Label:
+func make_label(text: String, size: int = 28, color: Color = TEXT_MAIN, wrap: bool = false) -> Label:
 	var l := Label.new()
 	l.text = text
 	l.add_theme_font_size_override("font_size", size)
 	l.add_theme_color_override("font_color", color)
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	# 折返しは長文（説明文・トースト）だけ。既定OFFにしないと
+	# 狭い場所のラベル（締切・報酬倍率など）が1文字ずつ縦に折れて読めなくなる
+	if wrap:
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	return l
 
 
@@ -136,6 +139,10 @@ func vspace(height: float = 20.0) -> Control:
 func make_margin_vbox(parent: Control, margin: int = 32, separation: int = 16) -> VBoxContainer:
 	var mc := MarginContainer.new()
 	mc.set_anchors_preset(Control.PRESET_FULL_RECT)
+	# ScrollContainer直下に置かれた場合はアンカーが効かないため、
+	# サイズフラグで全幅・全高に広げる（スマホで左寄りに潰れる不具合の対策）
+	mc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	mc.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	mc.add_theme_constant_override("margin_left", margin)
 	mc.add_theme_constant_override("margin_right", margin)
 	mc.add_theme_constant_override("margin_top", margin)

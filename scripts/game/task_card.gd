@@ -63,7 +63,7 @@ func _build() -> void:
 	_dl_label = UiTheme.make_label("", 24, UiTheme.TEXT_DIM)
 	top.add_child(_dl_label)
 
-	var desc := UiTheme.make_label(String(tpl.get("desc", "")), 21, UiTheme.TEXT_DIM)
+	var desc := UiTheme.make_label(String(tpl.get("desc", "")), 21, UiTheme.TEXT_DIM, true)
 	vb.add_child(desc)
 
 	_bar = UiTheme.make_bar(UiTheme.ACCENT)

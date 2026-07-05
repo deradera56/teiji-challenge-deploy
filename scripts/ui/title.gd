@@ -80,7 +80,7 @@ func _ready() -> void:
 		var hint_l := UiTheme.make_label(
 			"%s %s %s（%d/%d）" % [hint_text, String(hint.get("icon", "🏆")), String(hint.get("name", "")),
 					int(hint.get("_val", 0)), int(hint.get("_target", 1))],
-			19, UiTheme.WARN if ratio >= 0.7 else UiTheme.TEXT_DIM)
+			19, UiTheme.WARN if ratio >= 0.7 else UiTheme.TEXT_DIM, true)
 		hint_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		stats_vb.add_child(hint_l)
 

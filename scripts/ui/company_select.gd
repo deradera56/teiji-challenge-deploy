@@ -61,7 +61,7 @@ func _make_company_card(company: Dictionary) -> PanelContainer:
 	var mult := UiTheme.make_label("報酬 x%.2f" % float(company.get("reward_mult", 1.0)), 24, UiTheme.WARN)
 	top.add_child(mult)
 
-	vb.add_child(UiTheme.make_label(String(company.get("desc", "")), 22, UiTheme.TEXT_DIM))
+	vb.add_child(UiTheme.make_label(String(company.get("desc", "")), 22, UiTheme.TEXT_DIM, true))
 
 	if unlocked:
 		var go := UiTheme.make_button("🚪 ここに出社する", UiTheme.ACCENT, 28)

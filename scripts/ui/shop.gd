@@ -61,7 +61,7 @@ func _make_upgrade_row(u: Dictionary) -> PanelContainer:
 	var lv_col := UiTheme.GOOD if lv >= max_lv else UiTheme.TEXT_DIM
 	top.add_child(UiTheme.make_label("Lv %d/%d" % [lv, max_lv], 26, lv_col))
 
-	vb.add_child(UiTheme.make_label(String(u.get("desc", "")), 21, UiTheme.TEXT_DIM))
+	vb.add_child(UiTheme.make_label(String(u.get("desc", "")), 21, UiTheme.TEXT_DIM, true))
 
 	if lv >= max_lv:
 		var done := UiTheme.make_label("✅ 最大レベル", 24, UiTheme.GOOD)

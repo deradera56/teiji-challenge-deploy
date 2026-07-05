@@ -603,7 +603,7 @@ func _toast(text: String, bg: Color) -> void:
 	var p := UiTheme.make_panel(bg, 12)
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	p.modulate.a = 0.0
-	p.add_child(UiTheme.make_label(text, 23))
+	p.add_child(UiTheme.make_label(text, 23, UiTheme.TEXT_MAIN, true))
 	toast_box.add_child(p)
 	if toast_box.get_child_count() > 4:
 		toast_box.get_child(0).queue_free()
