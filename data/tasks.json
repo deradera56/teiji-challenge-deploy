@@ -102,21 +102,21 @@
     },
     {
       "id": "rush_boss", "name": "上司『ちょっといい？』", "icon": "👔😨", "category": "rush",
-      "desc": "17:50に肩を叩かれた。嫌な予感しかしない",
+      "desc": "17:30に肩を叩かれた。嫌な予感しかしない",
       "work_min": 8, "focus_cost": 5, "deadline_min": 30,
       "trust_done": 4, "trust_fail": -7, "motivation_fail": -5,
       "budget_reward": 6, "urgent": true, "refuse_trust": -4, "weight": 0
     },
     {
       "id": "rush_request", "name": "退社直前の依頼", "icon": "📥🙏", "category": "rush",
-      "desc": "『今日中にお願いできる？』（今17:50）",
+      "desc": "『今日中にお願いできる？』（今17:30）",
       "work_min": 10, "focus_cost": 6, "deadline_min": 35,
       "trust_done": 5, "trust_fail": -8, "motivation_fail": -6,
       "budget_reward": 8, "urgent": true, "refuse_trust": -3, "weight": 0
     },
     {
       "id": "rush_incident", "name": "本番障害!?", "icon": "💥😱", "category": "rush",
-      "desc": "17:50のアラート通知。今日イチの緊張感",
+      "desc": "17:30のアラート通知。今日イチの緊張感",
       "work_min": 14, "focus_cost": 9, "deadline_min": 40,
       "trust_done": 8, "trust_fail": -13, "motivation_fail": -7,
       "budget_reward": 14, "urgent": true, "refuse_trust": -8, "weight": 0

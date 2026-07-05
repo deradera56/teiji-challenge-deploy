@@ -1,9 +1,9 @@
 extends Control
-## コアゲームループ：出社→タスク発生→優先順位判断→イベント→17:50ラッシュ→退社判定
+## コアゲームループ：出社→タスク発生→優先順位判断→イベント→17:30ラッシュ→退社判定
 ## 時間はゲーム内分（9:00開始=0分、18:00=540分）で管理する。
 
 const DAY_END_MIN := 540.0      # 18:00 定時
-const RUSH_MIN := 530.0         # 17:50 ラッシュ
+const RUSH_MIN := 510.0         # 17:30 ラッシュ（消化しきれる余裕を持たせるため17:50から前倒し）
 const SPAWN_STOP_MIN := 500.0   # 通常タスクの発生はここまで
 const FORCE_END_MIN := 660.0    # 20:00 強制退社
 const GAME_MIN_PER_SEC := 3.2   # 実時間1秒 = ゲーム内3.2分（1日 約2.8分）
@@ -52,6 +52,7 @@ var coffee_btn: Button
 var card_list: VBoxContainer
 var toast_box: VBoxContainer
 var flash_rect: ColorRect
+var hud_panel: PanelContainer
 
 
 func _ready() -> void:
@@ -137,8 +138,8 @@ func _update_work(dgm: float) -> void:
 
 func _update_deadlines(dgm: float) -> void:
 	for card in cards.duplicate():
-		if card.state == TaskCard.State.ACTIVE:
-			continue  # 作業中は締切を止める（集中の恩恵）
+		if card.state == TaskCard.State.ACTIVE or card.state == TaskCard.State.AI:
+			continue  # 作業中・AI処理中は締切を止める（着手していれば期限切れにはならない）
 		card.deadline_left -= dgm
 		if card.deadline_left <= 0.0:
 			_fail_task(card)
@@ -168,7 +169,7 @@ func _check_rush() -> void:
 		var tpl := Config.get_task(id)
 		if not tpl.is_empty():
 			_add_task(tpl, true)
-	_toast("⏰ 17:50！帰宅直前ラッシュ発生！！", UiTheme.CARD_URGENT)
+	_toast("⏰ 17:30！帰宅直前ラッシュ発生！！", UiTheme.CARD_URGENT)
 	_flash(UiTheme.BAD)
 
 
@@ -463,6 +464,7 @@ func _build_ui() -> void:
 
 	# --- HUDパネル ---
 	var hud := UiTheme.make_panel(UiTheme.PANEL, 16)
+	hud_panel = hud
 	vb.add_child(hud)
 	var hud_vb := VBoxContainer.new()
 	hud_vb.add_theme_constant_override("separation", 6)
@@ -588,6 +590,11 @@ func _update_hud() -> void:
 	var ai_free := _ai_free_slots() > 0
 	for card in cards:
 		card.update_view(ai_available, ai_free)
+
+	# トーストがHUD（クロックや会社名など）と重ならないよう、実際のHUD高さに追従させる
+	if hud_panel != null:
+		var hud_bottom_local := hud_panel.get_global_rect().end.y - get_global_rect().position.y
+		toast_box.offset_top = hud_bottom_local + 16
 
 
 func _on_coffee() -> void:

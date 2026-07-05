@@ -22,7 +22,7 @@ func _ready() -> void:
 	vb.add_child(outcome)
 
 	var day_l := UiTheme.make_label("Day %d｜%s" % [int(r.get("day", 1)), String(r.get("company", ""))],
-			24, UiTheme.TEXT_DIM)
+			24, UiTheme.TEXT_DIM, true)
 	day_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vb.add_child(day_l)
 
@@ -36,7 +36,7 @@ func _ready() -> void:
 	grade_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vb.add_child(grade_l)
 	if bool(r.get("perfect", false)):
-		var p := UiTheme.make_label("💮 パーフェクトデー！（失敗ゼロで定時退社）", 25, UiTheme.WARN)
+		var p := UiTheme.make_label("💮 パーフェクトデー！（失敗ゼロで定時退社）", 25, UiTheme.WARN, true)
 		p.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vb.add_child(p)
 
@@ -47,7 +47,7 @@ func _ready() -> void:
 		vb.add_child(lvup)
 		var lvup_l := UiTheme.make_label(
 			"🆙 プレイヤーレベルアップ！ Lv%d → Lv%d" % [int(r.get("level_before", 0)), int(r.get("level_after", 0))],
-			26, UiTheme.TEXT_MAIN)
+			26, UiTheme.TEXT_MAIN, true)
 		lvup_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lvup.add_child(lvup_l)
 
@@ -107,7 +107,7 @@ func _ready() -> void:
 	money.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	rv.add_child(money)
 	var rank := UiTheme.make_label("👑 %s｜定時退社 %d回｜🔥連続 %d" % [Meta.rank_name(), Meta.teiji_count, Meta.streak],
-			24, UiTheme.TEXT_DIM)
+			24, UiTheme.TEXT_DIM, true)
 	rank.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	rv.add_child(rank)
 
@@ -117,7 +117,7 @@ func _ready() -> void:
 		"🧗 プレイヤーLv%d（%d/%d XP）｜🏆 実績 %d/%d" % [
 			int(prog["level"]), int(prog["cur"]), int(prog["need"]),
 			int(ach_count["unlocked"]), int(ach_count["total"])],
-		21, UiTheme.TEXT_DIM)
+		21, UiTheme.TEXT_DIM, true)
 	lv_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	rv.add_child(lv_line)
 

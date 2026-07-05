@@ -6,7 +6,7 @@ var tasks: Dictionary = {}            # id -> タスク定義
 var task_list: Array = []             # タスク定義の配列
 var spawn_interval_min: float = 24.0  # タスク発生間隔（ゲーム内分）
 var initial_tasks: Array = []         # 出社直後に積まれるタスク
-var rush_pool: Array = []             # 17:50ラッシュ用タスク
+var rush_pool: Array = []             # 17:30ラッシュ用タスク
 
 var events: Array = []
 var event_interval_min: float = 55.0
